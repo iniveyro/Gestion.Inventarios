@@ -52,3 +52,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+.vscode/
+publish/
+appsettings.secret.json
+Migrations/

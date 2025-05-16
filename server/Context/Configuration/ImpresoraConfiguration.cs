@@ -9,6 +9,7 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<ImpresoraModel> entityBuilder)
         {
             entityBuilder.ToTable("Impresora");
+            entityBuilder.HasBaseType<EquipoModel>();
             entityBuilder.Property(x=>x.TonnerModelo).IsRequired().HasMaxLength(30);
             entityBuilder.Property(x=>x.Tipo).IsRequired().HasMaxLength(30);
             entityBuilder.Property(x=>x.Consumible).IsRequired();

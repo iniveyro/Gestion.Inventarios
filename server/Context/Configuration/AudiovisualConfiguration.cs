@@ -9,6 +9,7 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<AudiovisualModel> entityBuilder)
         {
             entityBuilder.ToTable("Audivisual");
+            entityBuilder.HasBaseType<EquipoModel>();
         }
     }
 }

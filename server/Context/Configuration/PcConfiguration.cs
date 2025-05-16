@@ -9,6 +9,7 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<PcModel> entityBuilder)
         {
             entityBuilder.ToTable("Pc");
+            entityBuilder.HasBaseType<EquipoModel>();
             entityBuilder.Property(x=>x.Disco).HasMaxLength(100);
             entityBuilder.Property(x=>x.Fuente).HasMaxLength(100);
             entityBuilder.Property(x=>x.Procesador).HasMaxLength(100);

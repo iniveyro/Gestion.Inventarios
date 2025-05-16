@@ -9,6 +9,7 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<AAModel> entityBuilder)
         {
             entityBuilder.ToTable("AiresAcond");
+            entityBuilder.HasBaseType<EquipoModel>();
             entityBuilder.Property(x=>x.Frigorias).HasMaxLength(10);
             entityBuilder.Property(x=>x.Potencia).HasMaxLength(10);
             entityBuilder.Property(x=>x.Tipo).IsRequired();

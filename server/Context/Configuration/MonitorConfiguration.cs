@@ -9,6 +9,7 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<MonitorModel> entityBuilder)
         {
             entityBuilder.ToTable("Monitor");
+            entityBuilder.HasBaseType<EquipoModel>();
         }
     }
 }

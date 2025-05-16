@@ -4,6 +4,5 @@ namespace server.Models
     {
         public string? Resolucion {get;set;}
         public string? Fuente {get;set;}
-        public required EquipoModel Equipo {get;set;}
     }
 }

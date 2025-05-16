@@ -1,11 +1,10 @@
-namespace server.Models
+namespace server.Models.DTOs.User
 {
-    public class UserModel
+
+    public class CreateUserModel
     {
-        public int UserId {get;set;}
         public string NomApe {get;set;}
         public string Username {get;set;}
         public string Password {get;set;}
-        public string? Rol {get;set;}
     }
 }

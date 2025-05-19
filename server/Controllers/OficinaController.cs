@@ -8,11 +8,11 @@ namespace server.Controllers
 {
     [ApiController]
     [Route("api/v1/oficina")]
-    public class OficiniaController : ControllerBase
+    public class OficinaController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
 
-        public OficiniaController(DatabaseService databaseService)
+        public OficinaController(DatabaseService databaseService)
         {
             _databaseService = databaseService;
         }

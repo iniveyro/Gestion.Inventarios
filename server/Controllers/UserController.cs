@@ -23,7 +23,7 @@ namespace server.Controllers
             var user = new UserModel();
             user.NomApe = createUserModel.NomApe;
             user.Password = createUserModel.Password;
-            user.Rol = "Admin";
+            user.EsAdmin = true;
             user.Username = createUserModel.Username;
             await _databaseService.Users.AddAsync(user);
             await _databaseService.SaveAsync();

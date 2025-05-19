@@ -12,8 +12,8 @@ namespace server.Context.Configuration
             entityBuilder.HasKey(x=>x.UserId);
             entityBuilder.Property(x=>x.NomApe).IsRequired().HasMaxLength(150);
             entityBuilder.Property(x=>x.Username).IsRequired().HasMaxLength(64);
-            entityBuilder.Property(x=>x.Password).IsRequired().HasMaxLength(16);
-            entityBuilder.Property(x=>x.Rol).HasMaxLength(20);
+            entityBuilder.Property(x=>x.Password).IsRequired().HasMaxLength(64);
+            entityBuilder.Property(x => x.EsAdmin);
         }
     }
 }

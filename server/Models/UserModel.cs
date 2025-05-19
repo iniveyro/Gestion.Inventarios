@@ -6,6 +6,6 @@ namespace server.Models
         public string NomApe {get;set;}
         public string Username {get;set;}
         public string Password {get;set;}
-        public string? Rol {get;set;}
+        public bool EsAdmin {get;set;}
     }
 }

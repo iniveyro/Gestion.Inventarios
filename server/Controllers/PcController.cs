@@ -23,7 +23,6 @@ namespace server.Controllers
         {
             var pc = new PcModel();
             pc.NroInventario = createPcModel.NroInventario;
-            pc.NroSerie = createPcModel.NroSerie;
             pc.Disco = createPcModel.Disco;
             pc.Marca = createPcModel.Marca;
             pc.Fuente = createPcModel.Fuente;
@@ -31,7 +30,8 @@ namespace server.Controllers
             pc.Modelo = createPcModel.Modelo;
             pc.Ram = createPcModel.Ram;
             pc.TipoRam = createPcModel.TipoRam;
-            pc.OficinaId = createPcModel.oficinaId; // <-- ¡asigná la oficina!
+            pc.OficinaId = createPcModel.oficinaId;
+            pc.NroSerie = createPcModel.NroSerie;
             _databaseService.Pcs.Add(pc);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status201Created, pc);

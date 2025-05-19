@@ -10,6 +10,10 @@ namespace server.Context.Configuration
         {
             entityBuilder.ToTable("Impresora");
             entityBuilder.HasBaseType<EquipoModel>();
+            entityBuilder.HasOne<EquipoModel>()
+            .WithOne()
+            .HasForeignKey<ImpresoraModel>(x => x.IdEquipo)
+            .OnDelete(DeleteBehavior.Cascade);
             entityBuilder.Property(x=>x.TonnerModelo).IsRequired().HasMaxLength(30);
             entityBuilder.Property(x=>x.Tipo).IsRequired().HasMaxLength(30);
             entityBuilder.Property(x=>x.Consumible).IsRequired();

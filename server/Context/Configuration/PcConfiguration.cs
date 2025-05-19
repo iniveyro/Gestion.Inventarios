@@ -10,6 +10,10 @@ namespace server.Context.Configuration
         {
             entityBuilder.ToTable("Pc");
             entityBuilder.HasBaseType<EquipoModel>();
+            entityBuilder.HasOne<EquipoModel>()
+            .WithOne()
+            .HasForeignKey<PcModel>(x => x.IdEquipo)
+            .OnDelete(DeleteBehavior.Cascade);
             entityBuilder.Property(x=>x.Disco).HasMaxLength(100);
             entityBuilder.Property(x=>x.Fuente).HasMaxLength(100);
             entityBuilder.Property(x=>x.Procesador).HasMaxLength(100);

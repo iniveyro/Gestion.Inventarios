@@ -9,9 +9,11 @@ namespace server.Context.Configuration
         public void Configure(EntityTypeBuilder<EquipoModel> entityBuilder)
         {
             entityBuilder.ToTable("Equipo");
-            entityBuilder.HasKey(x=>x.NroInventario);
-            entityBuilder.HasAlternateKey(x=>x.NroSerie);
             
+            entityBuilder.HasKey(x => x.IdEquipo);
+            entityBuilder.Property(x => x.IdEquipo).UseIdentityColumn();
+            entityBuilder.Property(x=>x.NroInventario);
+            entityBuilder.Property(x=>x.NroSerie);
             entityBuilder.Property(x=>x.Marca).IsRequired();
             entityBuilder.Property(x=>x.Modelo).IsRequired();
             entityBuilder.Property(x=>x.Observacion);

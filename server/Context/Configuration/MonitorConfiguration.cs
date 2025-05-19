@@ -10,6 +10,10 @@ namespace server.Context.Configuration
         {
             entityBuilder.ToTable("Monitor");
             entityBuilder.HasBaseType<EquipoModel>();
+            entityBuilder.HasOne<EquipoModel>()
+            .WithOne()
+            .HasForeignKey<MonitorModel>(m => m.IdEquipo)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

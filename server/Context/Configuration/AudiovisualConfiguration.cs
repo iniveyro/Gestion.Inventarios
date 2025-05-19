@@ -8,8 +8,14 @@ namespace server.Context.Configuration
     {
         public void Configure(EntityTypeBuilder<AudiovisualModel> entityBuilder)
         {
-            entityBuilder.ToTable("Audivisual");
+            entityBuilder.ToTable("Audiovisual");
             entityBuilder.HasBaseType<EquipoModel>();
+            entityBuilder.HasOne<EquipoModel>()
+            .WithOne()
+            .HasForeignKey<AudiovisualModel>(x => x.IdEquipo)
+            .OnDelete(DeleteBehavior.Cascade);
+            entityBuilder.Property(x=>x.Accesorios).HasMaxLength(200);
+            entityBuilder.Property(x=>x.Tipo).HasMaxLength(100);
         }
     }
 }

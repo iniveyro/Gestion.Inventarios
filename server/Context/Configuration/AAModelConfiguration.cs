@@ -10,6 +10,10 @@ namespace server.Context.Configuration
         {
             entityBuilder.ToTable("AiresAcond");
             entityBuilder.HasBaseType<EquipoModel>();
+            entityBuilder.HasOne<EquipoModel>()
+            .WithOne()
+            .HasForeignKey<AAModel>(x => x.IdEquipo)
+            .OnDelete(DeleteBehavior.Cascade);
             entityBuilder.Property(x=>x.Frigorias).HasMaxLength(10);
             entityBuilder.Property(x=>x.Potencia).HasMaxLength(10);
             entityBuilder.Property(x=>x.Tipo).IsRequired();

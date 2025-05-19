@@ -15,10 +15,11 @@ namespace server.Context.Database
         public DbSet<PcModel> Pcs {get;set;}
         public DbSet<ImpresoraModel> Impresoras {get;set;}
         public DbSet<MonitorModel> Monitores {get;set;}
+        public DbSet<AudiovisualModel> Audiovisuales { get; set; }
 
         public async Task<bool> SaveAsync()
         {
-            return await SaveChangesAsync()>0;
+            return await SaveChangesAsync() > 0;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -18,6 +18,7 @@ namespace ApiAudiencia.Controllers
             _databaseService = databaseService;
             _utilidades = utilidades;
         }
+        
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
@@ -66,7 +67,7 @@ namespace ApiAudiencia.Controllers
                 {
                     usuario.NomApe,
                     usuario.Password,
-                    usuario.Rol,
+                    usuario.EsAdmin,
                     usuario.UserId,
                     usuario.Username
                 }

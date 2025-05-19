@@ -23,13 +23,13 @@ namespace server.Controllers
         {
             var aire = new AAModel();
             aire.NroInventario = createAAModel.NroInventario;
-            aire.NroSerie = createAAModel.NroSerie;
             aire.Marca = createAAModel.Marca;
             aire.Modelo = createAAModel.Modelo;
             aire.Potencia = createAAModel.Potencia;
             aire.Frigorias = createAAModel.Frigorias;
             aire.Tipo = createAAModel.Tipo;
             aire.OficinaId = createAAModel.oficinaId;
+            aire.NroSerie = createAAModel.NroSerie;
             _databaseService.Aires.Add(aire);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status201Created, aire);

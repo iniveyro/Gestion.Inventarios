@@ -31,12 +31,13 @@ namespace ApiAudiencia.Custom
 
         public string generarToken(UserModel modelo)
         {
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _configuration["JWT:key"];
             var claims = new[]
             {
                new Claim(ClaimTypes.NameIdentifier, modelo.UserId.ToString()),
                new Claim(ClaimTypes.Name, modelo.Username!),
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             //crear detalle del token con los claims, tiempo de expiración y credenciales

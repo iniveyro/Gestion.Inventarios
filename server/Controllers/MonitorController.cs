@@ -10,7 +10,7 @@ using server.Models.DTOs.User;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/monitor")]
+    [Route("api/monitor")]
     public class MonitorController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

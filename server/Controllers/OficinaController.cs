@@ -7,7 +7,7 @@ using server.Models.DTOs.Oficina;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/oficina")]
+    [Route("api/oficina")]
     public class OficinaController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

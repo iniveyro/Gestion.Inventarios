@@ -7,7 +7,7 @@ using server.Models.DTOs.Equipo;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/audiovisual")]
+    [Route("api/audiovisual")]
     public class AudiovisualController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

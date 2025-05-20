@@ -7,7 +7,7 @@ using server.Models.DTOs.Equipo;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/aires")]
+    [Route("api/aires")]
     public class AAController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

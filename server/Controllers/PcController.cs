@@ -7,7 +7,7 @@ using server.Models.DTOs.Equipo;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/pc")]
+    [Route("api/pc")]
     public class PcController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

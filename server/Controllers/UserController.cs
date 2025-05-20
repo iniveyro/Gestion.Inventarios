@@ -7,7 +7,7 @@ using server.Models.DTOs.User;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/v1/user")]
+    [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly DatabaseService _databaseService;

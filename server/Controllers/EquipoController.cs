@@ -18,7 +18,7 @@ namespace server.Controllers
 
         [HttpPost()]
         [Route("getequipo")]
-        public async Task<IActionResult> GetByNroInventario([FromBody] DeleteEquipoModel equipoModel)
+        public async Task<IActionResult> GetByNroInvSerie([FromBody] DeleteEquipoModel equipoModel)
         {
             var data = await (
                 from Equipos in _databaseService.Equipos

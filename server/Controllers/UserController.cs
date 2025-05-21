@@ -23,7 +23,7 @@ namespace server.Controllers
             var user = new UserModel();
             user.NomApe = createUserModel.NomApe;
             user.Password = createUserModel.Password;
-            user.EsAdmin = true;
+            user.EsAdmin = false;
             user.Username = createUserModel.Username;
             await _databaseService.Users.AddAsync(user);
             await _databaseService.SaveAsync();
@@ -38,9 +38,9 @@ namespace server.Controllers
         }
         
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(int usuarioId)
+        public async Task<IActionResult> Delete(int id)
         {
-            var usuario = await _databaseService.Users.FindAsync(usuarioId);
+            var usuario = await _databaseService.Users.FindAsync(id);
             _databaseService.Users.Remove(usuario);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status200OK, "Usuario eliminado");

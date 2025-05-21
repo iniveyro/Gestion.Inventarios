@@ -27,9 +27,9 @@ namespace ApiAudiencia.Controllers
             {
                 return BadRequest("Correo y contraseña son requeridos");
             } 
-            var usuario = await _databaseService.Users
-                .FirstOrDefaultAsync(x => x.Username == login.Username);
-    
+
+            var usuario = await _databaseService.Users.FirstOrDefaultAsync(x => x.Username == login.Username);
+
             if (usuario == null)
             {
                 return Unauthorized("Credenciales inválidas");
@@ -40,16 +40,6 @@ namespace ApiAudiencia.Controllers
             if (usuario.Password.StartsWith("$2a$") || usuario.Password.StartsWith("$2b$")) 
             {
                 credencialesValidas = BCrypt.Net.BCrypt.Verify(login.Password, usuario.Password);
-            }
-            else
-            {
-                credencialesValidas = (usuario.Password == login.Password);
-        
-                if (credencialesValidas)
-                {
-                    usuario.Password = BCrypt.Net.BCrypt.HashPassword(login.Password);
-                    await _databaseService.SaveChangesAsync();
-                }
             }
 
             if (!credencialesValidas)

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
 using server.Models;
+using server.Models.DTOs.Audiovisuales;
 using server.Models.DTOs.Equipo;
 
 namespace server.Controllers
@@ -37,7 +38,21 @@ namespace server.Controllers
         [Route("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _databaseService.Audiovisuales.ToArrayAsync();
+            var data = await (
+                from av in _databaseService.Audiovisuales
+                join Oficinas in _databaseService.Oficinas
+                on av.OficinaId equals Oficinas.OficinaId
+                select new GetAudiovisuales()
+                {
+                    NroInventario = av.NroInventario,
+                    NroSerie = av.NroSerie,
+                    Marca = av.Marca,
+                    Modelo = av.Modelo,
+                    Accesorios = av.Accesorios,
+                    Tipo = av.Tipo,
+                    Oficina = Oficinas.Nombre
+                }
+                ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
     }

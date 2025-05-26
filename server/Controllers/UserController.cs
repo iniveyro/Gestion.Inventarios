@@ -11,12 +11,10 @@ namespace server.Controllers
     public class UserController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-
         public UserController(DatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
-
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateUserModel createUserModel)
         {
@@ -33,7 +31,14 @@ namespace server.Controllers
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _databaseService.Users.ToListAsync();
+            var user = await _databaseService.Users.FirstAsync();
+            var data = new GetUser()
+            {
+                UserId = user.UserId,
+                NomApe = user.NomApe,
+                Username = user.Username,
+                EsAdmin = user.EsAdmin,
+            };
             return StatusCode(StatusCodes.Status200OK, data);
         }
         

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
 using server.Models;
 using server.Models.DTOs.Equipo;
+using server.Models.DTOs.Pcs;
 
 namespace server.Controllers
 {
@@ -41,7 +42,24 @@ namespace server.Controllers
         [Route("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _databaseService.Pcs.ToListAsync();
+            var data = await (
+                from pc in _databaseService.Pcs
+                join Oficinas in _databaseService.Oficinas
+                on pc.OficinaId equals Oficinas.OficinaId
+                select new GetPcs()
+                {
+                    NroInventario = pc.NroInventario,
+                    NroSerie = pc.NroSerie,
+                    Marca = pc.Marca,
+                    Modelo = pc.Modelo,
+                    Procesador = pc.Procesador,
+                    Ram = pc.Ram,
+                    TipoRam = pc.TipoRam,
+                    Disco = pc.Disco,
+                    Fuente = pc.Fuente,
+                    Oficina = Oficinas.Nombre
+                }
+                ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
 

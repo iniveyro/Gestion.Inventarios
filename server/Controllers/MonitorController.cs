@@ -1,11 +1,9 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
 using server.Models;
 using server.Models.DTOs.Equipo;
-using server.Models.DTOs.User;
+using server.Models.DTOs.Monitores;
 
 namespace server.Controllers
 {
@@ -40,7 +38,21 @@ namespace server.Controllers
         [Route("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _databaseService.Monitores.ToArrayAsync();
+            var data = await (
+                from m in _databaseService.Monitores
+                join Oficinas in _databaseService.Oficinas
+                on m.OficinaId equals Oficinas.OficinaId
+                select new GetMonitores()
+                {
+                    NroInventario = m.NroInventario,
+                    NroSerie = m.NroSerie,
+                    Marca = m.Marca,
+                    Modelo = m.Modelo,
+                    Resolucion = m.Resolucion,
+                    Fuente = m.Fuente,
+                    Oficina = Oficinas.Nombre
+                }
+                ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
     }

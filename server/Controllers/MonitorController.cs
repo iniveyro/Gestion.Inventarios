@@ -8,7 +8,7 @@ using server.Models.DTOs.Monitores;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/monitor")]
+    [Route("api/[controller]")]
     public class MonitorController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
@@ -18,7 +18,7 @@ namespace server.Controllers
         }
 
         [HttpPost()]
-        [Route("create")]
+        [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateMonitorModel createMonitorModel)
         {
             var monitor = new MonitorModel();
@@ -35,7 +35,7 @@ namespace server.Controllers
         }
 
         [HttpGet()]
-        [Route("get-all")]
+        [Route("listado")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (

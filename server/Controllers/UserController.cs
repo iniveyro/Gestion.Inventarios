@@ -7,7 +7,7 @@ using server.Models.DTOs.User;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/user")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
@@ -15,7 +15,7 @@ namespace server.Controllers
         {
             _databaseService = databaseService;
         }
-        [HttpPost("create")]
+        [HttpPost("crear")]
         public async Task<IActionResult> Create([FromBody] CreateUserModel createUserModel)
         {
             var user = new UserModel();
@@ -28,7 +28,7 @@ namespace server.Controllers
             return StatusCode(StatusCodes.Status201Created, user);
         }
 
-        [HttpGet("get-all")]
+        [HttpGet("listado")]
         public async Task<IActionResult> GetAll()
         {
             var user = await _databaseService.Users.FirstAsync();
@@ -42,7 +42,7 @@ namespace server.Controllers
             return StatusCode(StatusCodes.Status200OK, data);
         }
         
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("borrar/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var usuario = await _databaseService.Users.FindAsync(id);

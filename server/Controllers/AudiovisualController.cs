@@ -8,7 +8,7 @@ using server.Models.DTOs.Equipo;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/audiovisual")]
+    [Route("api/[controller]")]
     public class AudiovisualController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
@@ -18,14 +18,14 @@ namespace server.Controllers
         }
 
         [HttpPost()]
-        [Route("create")]
+        [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateAudiovisualModel createAudiovisualModel)
         {
             var av = new AudiovisualModel();
             av.NroInventario = createAudiovisualModel.NroInventario;
             av.Marca = createAudiovisualModel.Marca;
             av.Modelo = createAudiovisualModel.Modelo;
-            av.Accesorios = createAudiovisualModel.Accesorios;
+            av.Accesorio = createAudiovisualModel.Accesorios;
             av.Tipo = createAudiovisualModel.Tipo;
             av.OficinaId = createAudiovisualModel.oficinaId;
             av.NroSerie = createAudiovisualModel.NroSerie;
@@ -35,7 +35,7 @@ namespace server.Controllers
         }
 
         [HttpGet()]
-        [Route("get-all")]
+        [Route("listado")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (
@@ -48,7 +48,7 @@ namespace server.Controllers
                     NroSerie = av.NroSerie,
                     Marca = av.Marca,
                     Modelo = av.Modelo,
-                    Accesorios = av.Accesorios,
+                    Accesorios = av.Accesorio,
                     Tipo = av.Tipo,
                     Oficina = Oficinas.Nombre
                 }

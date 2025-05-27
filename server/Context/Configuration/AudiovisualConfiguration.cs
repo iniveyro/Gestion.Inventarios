@@ -14,7 +14,7 @@ namespace server.Context.Configuration
             .WithOne()
             .HasForeignKey<AudiovisualModel>(x => x.IdEquipo)
             .OnDelete(DeleteBehavior.Cascade);
-            entityBuilder.Property(x=>x.Accesorios).HasMaxLength(200);
+            entityBuilder.Property(x=>x.Accesorio).HasMaxLength(200);
             entityBuilder.Property(x=>x.Tipo).HasMaxLength(100);
         }
     }

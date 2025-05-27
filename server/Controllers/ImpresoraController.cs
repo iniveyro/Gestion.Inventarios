@@ -17,7 +17,7 @@ namespace server.Controllers
             _databaseService = databaseService;
         }
         [HttpPost()]
-        [Route("create")]
+        [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateImpresoraModel createImpresora)
         {
             var impresora = new ImpresoraModel();
@@ -35,7 +35,7 @@ namespace server.Controllers
         }
 
         [HttpGet()]
-        [Route("get-all")]
+        [Route("listado")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (

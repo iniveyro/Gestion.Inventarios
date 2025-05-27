@@ -8,13 +8,13 @@ namespace server.Context.Configuration
     {
         public void Configure(EntityTypeBuilder<AAModel> entityBuilder)
         {
-            entityBuilder.ToTable("AiresAcond");
+            entityBuilder.ToTable("AiresAcondicionados");
             entityBuilder.HasBaseType<EquipoModel>();
             entityBuilder.HasOne<EquipoModel>()
             .WithOne()
             .HasForeignKey<AAModel>(x => x.IdEquipo)
             .OnDelete(DeleteBehavior.Cascade);
-            entityBuilder.Property(x=>x.Frigorias).HasMaxLength(10);
+            entityBuilder.Property(x=>x.Frigoria).HasMaxLength(10);
             entityBuilder.Property(x=>x.Potencia).HasMaxLength(10);
             entityBuilder.Property(x=>x.Tipo).IsRequired();
         }

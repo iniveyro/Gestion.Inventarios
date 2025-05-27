@@ -16,6 +16,7 @@ namespace server.Context.Database
         public DbSet<ImpresoraModel> Impresoras {get;set;}
         public DbSet<MonitorModel> Monitores {get;set;}
         public DbSet<AudiovisualModel> Audiovisuales { get; set; }
+        public DbSet<ComponenteModel> Componentes { get; set; }
 
         public async Task<bool> SaveAsync()
         {
@@ -33,6 +34,7 @@ namespace server.Context.Database
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new OficinaConfiguration());
             modelBuilder.ApplyConfiguration(new EquipoConfiguration());
+            modelBuilder.ApplyConfiguration(new ComponenteConfiguration());
 
             // Subtipos de Equipo
             modelBuilder.ApplyConfiguration(new PcConfiguration());

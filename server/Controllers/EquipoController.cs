@@ -17,7 +17,7 @@ namespace server.Controllers
         }
 
         [HttpPost()]
-        [Route("getequipo")]
+        [Route("obtener_equipo")]
         public async Task<IActionResult> GetByNroInvSerie([FromBody] DeleteEquipoModel equipoModel)
         {
             var data = await (
@@ -38,7 +38,7 @@ namespace server.Controllers
         }
 
         [HttpDelete()]
-        [Route("delete")]
+        [Route("borrar")]
         public async Task<IActionResult> Delete([FromBody] DeleteEquipoModel deleteEquipoModel)
         {
             var data = await (

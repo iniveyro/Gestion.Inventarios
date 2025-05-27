@@ -8,18 +8,18 @@ using server.Models.DTOs.Equipo;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/aires")]
-    public class AAController : ControllerBase
+    [Route("api/[controller]")]
+    public class AiresController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
 
-        public AAController(DatabaseService databaseService)
+        public AiresController(DatabaseService databaseService)
         {
             _databaseService = databaseService;
         }
 
         [HttpPost()]
-        [Route("create")]
+        [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateAAModel createAAModel)
         {
             var aire = new AAModel();
@@ -27,7 +27,7 @@ namespace server.Controllers
             aire.Marca = createAAModel.Marca;
             aire.Modelo = createAAModel.Modelo;
             aire.Potencia = createAAModel.Potencia;
-            aire.Frigorias = createAAModel.Frigorias;
+            aire.Frigoria = createAAModel.Frigorias;
             aire.Tipo = createAAModel.Tipo;
             aire.OficinaId = createAAModel.oficinaId;
             aire.NroSerie = createAAModel.NroSerie;
@@ -37,7 +37,7 @@ namespace server.Controllers
         }
 
         [HttpGet()]
-        [Route("get-all")]
+        [Route("listado")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (
@@ -50,7 +50,7 @@ namespace server.Controllers
                     NroSerie = Aires.NroSerie,
                     Marca = Aires.Marca,
                     Modelo = Aires.Modelo,
-                    Frigorias = Aires.Frigorias,
+                    Frigorias = Aires.Frigoria,
                     Tipo = Aires.Tipo,
                     Potencia = Aires.Potencia,
                     Oficina = Oficinas.Nombre

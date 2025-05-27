@@ -8,7 +8,7 @@ using server.Models.DTOs.Pcs;
 namespace server.Controllers
 {
     [ApiController]
-    [Route("api/pc")]
+    [Route("api/[controller]")]
     public class PcController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
@@ -19,7 +19,7 @@ namespace server.Controllers
         }
 
         [HttpPost()]
-        [Route("create")]
+        [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreatePcModel createPcModel)
         {
             var pc = new PcModel();
@@ -39,7 +39,7 @@ namespace server.Controllers
         }
 
         [HttpGet()]
-        [Route("get-all")]
+        [Route("listado")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (

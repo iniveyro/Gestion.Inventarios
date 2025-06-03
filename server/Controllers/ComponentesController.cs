@@ -13,11 +13,9 @@ namespace server.Controllers
     public class ComponentesController : Controller
     {
         private readonly DatabaseService _databaseService;
-        private readonly IConfiguration _configuration;
         public ComponentesController(DatabaseService databaseService, IConfiguration configuration)
         {
             _databaseService = databaseService;
-            _configuration = configuration;
         }
 
         [HttpPost()]
@@ -65,21 +63,19 @@ namespace server.Controllers
 
         [HttpGet]
         [Route("listado-excel")]
-        public async Task<IActionResult> ListadoExcel()
+        public async Task<IActionResult> ListadoExcel([FromServices]IHttpClientFactory httpClientFactory)
         {
             try
             {
                 var componentes = await _databaseService.Componentes.ToListAsync();
 
-                string apiUrl = (_configuration["apiUrl:excel-service"] ?? _configuration["excel-service"]) + "api/Excel/exportar-componentes";
-
-                using var httpClient = new HttpClient();
+                var httpClient = httpClientFactory.CreateClient("ExcelService");
 
                 // Serializar los datos a JSON para enviar
                 var jsonData = JsonSerializer.Serialize(componentes);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync(apiUrl, content);
+                var response = await httpClient.PostAsync("api/Excel/exportar-componentes",content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -89,7 +85,6 @@ namespace server.Controllers
 
                 // Obtener el stream del contenido de la respuesta
                 var fileStream = await response.Content.ReadAsStreamAsync();
-
                 // Crear un MemoryStream para poder resetear la posición
                 var memoryStream = new MemoryStream();
                 await fileStream.CopyToAsync(memoryStream);
@@ -98,30 +93,23 @@ namespace server.Controllers
                 return File(
                     fileContents: memoryStream.ToArray(),
                     contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    fileDownloadName: $"ListadoComponentes_{DateTime.Now:yyyyMMddHHmmss}.xlsx"
+                    fileDownloadName: $"ListadoComponentes_{DateTime.Now:yyyyMMddHHmm}.xlsx"
                 );
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno al generar el Excel: {ex.Message}");
             }
-
         }
 
         [HttpGet]
         [Route("modelo-excel")]
-        public async Task<IActionResult> ObtenerPlantillaExcel()
+        public async Task<IActionResult> ObtenerPlantillaExcel([FromServices]IHttpClientFactory httpClientFactory)
         {
             try
             {
-                // Configurar HttpClient (idealmente usar IHttpClientFactory)
-                using var httpClient = new HttpClient();
-
-                // URL del servicio externo (debería venir de configuración)
-                string apiUrl = _configuration["apiUrl:excel-service"] + "api/Excel/nuevo-componente";
-
-                // Realizar la petición GET al servicio externo
-                var response = await httpClient.GetAsync(apiUrl);
+                var httpClient = httpClientFactory.CreateClient("ExcelService");
+                var response = await httpClient.GetAsync("api/Excel/nuevo-componente");
 
                 // Verificar si la respuesta fue exitosa
                 if (!response.IsSuccessStatusCode)
@@ -148,15 +136,12 @@ namespace server.Controllers
             }
             catch (Exception ex)
             {
-                // Registrar el error (idealmente usar ILogger)
-                Console.WriteLine($"Error al obtener plantilla Excel: {ex.Message}");
-
                 return StatusCode(500, $"Error interno al obtener la plantilla: {ex.Message}");
             }
         }
         [HttpPost]
         [Route("cargar-excel")]
-        public async Task<IActionResult> cargarExcel(IFormFile file)
+        public async Task<IActionResult> cargarExcel(IFormFile file, [FromServices]IHttpClientFactory httpClientFactory)
         {
             // Validación más robusta del archivo
             if (file == null || file.Length == 0)
@@ -170,11 +155,7 @@ namespace server.Controllers
 
             try
             {
-                // Configurar HttpClient (idealmente usar IHttpClientFactory)
-                using var httpClient = new HttpClient();
-                
-                // URL del servicio externo
-                string apiUrl = _configuration["apiUrl:excel-service"] + "api/Excel/importar-componente";
+                var httpClient = httpClientFactory.CreateClient("ExcelService");
 
                 // Crear contenido multipart para enviar el archivo
                 using var formContent = new MultipartFormDataContent();
@@ -182,7 +163,7 @@ namespace server.Controllers
                 formContent.Add(new StreamContent(fileStream), "file", file.FileName);
 
                 // Enviar archivo al servicio externo
-                var response = await httpClient.PostAsync(apiUrl, formContent);
+                var response = await httpClient.PostAsync("api/Excel/importar-componente", formContent);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -191,31 +172,16 @@ namespace server.Controllers
                         $"Error al procesar archivo en el servicio externo: {errorContent}");
                 }
 
-                // Opción 1: Devolver directamente la respuesta del servicio externo
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return Content(responseContent, "application/json");
-
-                // Opción 2: Procesar la respuesta (si necesitas transformarla)
-                /*
-                var resultado = await response.Content.ReadFromJsonAsync<ResultadoImportacion>();
-                return Ok(new {
-                    Message = "Archivo procesado correctamente",
-                    TotalRegistros = resultado?.TotalRegistros,
-                    RegistrosError = resultado?.RegistrosConError
-                });
-                */
             }
             catch (Exception ex)
             {
-                // Registrar el error (idealmente usar ILogger)
-                Console.WriteLine($"Error al importar Excel: {ex}");
-                
                 return StatusCode(500, new {
                     Error = "Error interno al procesar el archivo",
                     Detalle = ex.Message
                 });
             }
-
         }
     }
 }

@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using service_excel.Models;
@@ -9,12 +11,6 @@ namespace service_excel.Controllers
     [Route("api/[controller]")]
     public class ExcelController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        public ExcelController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         [HttpGet]
         [Route("nuevo-componente")] //La idea de este endopint es que devuelva un excel en blanco con la estructura para un determinado modelo
         public IActionResult NuevoExcel()
@@ -47,17 +43,16 @@ namespace service_excel.Controllers
 
         [HttpPost]
         [Route("importar-componente")]
-        public async Task<IActionResult> ImportExcel(IFormFile file)
+        public async Task<IActionResult> ImportExcel(IFormFile file, [FromServices] IHttpClientFactory httpClientFactory)
         {
             try
             {
                 var componentes = ExcelComponentes.Import(file);
-                // Enviar a la API externa
-                string apiUrl = (_configuration["apiUrl:url"] ?? _configuration["apiUrl"]) + "api/Componentes/crear-lista";
+                var httpClient = httpClientFactory.CreateClient("BackendService");
+                var jsonData = JsonSerializer.Serialize(componentes.Result);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                using var httpClient = new HttpClient();
-
-                var response = await httpClient.PostAsJsonAsync(apiUrl, componentes.Result);
+                var response = await httpClient.PostAsync("api/Componentes/crear-lista", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

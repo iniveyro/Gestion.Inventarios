@@ -6,8 +6,6 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddJsonFile("appsettings.secret.json", optional: false, reloadOnChange: true);
 }
 
-var apiUrl = Environment.GetEnvironmentVariable("apiUrl") ?? builder.Configuration["apiUrl:url"];
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -21,6 +19,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient("BackendService", client => 
+{
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("apiUrl")??builder.Configuration["apiUrl:url"]);
+    client.Timeout = TimeSpan.FromMinutes(5); // Tiempo suficiente para archivos grandes
+});
 
 var app = builder.Build();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";

@@ -14,7 +14,6 @@ if (builder.Environment.IsDevelopment())
 }
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["JWT:key"];
-var apiUrl = Environment.GetEnvironmentVariable("excel-service") ?? builder.Configuration["apiUrl:excel-service"];
 
 var connectionString = Environment.GetEnvironmentVariable("PostgresConnection") 
     ?? builder.Configuration.GetConnectionString("RailwayPostgresConnection");
@@ -49,6 +48,12 @@ builder.Services.AddSingleton<Utilidades>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient("ExcelService", client => 
+{
+    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("excel-service") ?? builder.Configuration["apiUrl:excel-service"]);
+    client.Timeout = TimeSpan.FromMinutes(5);
+});
 
 builder.Services.AddCors(options =>
 {

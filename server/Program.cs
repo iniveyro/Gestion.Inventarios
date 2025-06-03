@@ -14,6 +14,7 @@ if (builder.Environment.IsDevelopment())
 }
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["JWT:key"];
+var apiUrl = Environment.GetEnvironmentVariable("excel-service") ?? builder.Configuration["apiUrl:excel-service"];
 
 var connectionString = Environment.GetEnvironmentVariable("PostgresConnection") 
     ?? builder.Configuration.GetConnectionString("RailwayPostgresConnection");

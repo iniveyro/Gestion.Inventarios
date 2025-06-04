@@ -29,7 +29,6 @@ namespace service_excel.Services
                         Cantidad = int.TryParse(row.Cell(4).Value.ToString(), out int cantidad) ? cantidad : 0,
                         Detalle = row.Cell(5).Value.ToString() ?? string.Empty,
                     };
-
                     componentes.Add(componente);
                 }
             }
@@ -37,4 +36,3 @@ namespace service_excel.Services
         }
     }
 }
-

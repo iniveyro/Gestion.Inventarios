@@ -20,7 +20,7 @@ namespace server.Controllers
         {
             var user = new UserModel();
             user.NomApe = createUserModel.NomApe;
-            user.Password = createUserModel.Password;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(createUserModel.Password);
             user.EsAdmin = false;
             user.Username = createUserModel.Username;
             await _databaseService.Users.AddAsync(user);
@@ -31,15 +31,8 @@ namespace server.Controllers
         [HttpGet("listado")]
         public async Task<IActionResult> GetAll()
         {
-            var user = await _databaseService.Users.FirstAsync();
-            var data = new GetUser()
-            {
-                UserId = user.UserId,
-                NomApe = user.NomApe,
-                Username = user.Username,
-                EsAdmin = user.EsAdmin,
-            };
-            return StatusCode(StatusCodes.Status200OK, data);
+            var listado = await _databaseService.Users.ToListAsync();
+            return StatusCode(StatusCodes.Status200OK, listado);
         }
         
         [HttpDelete("borrar/{id}")]

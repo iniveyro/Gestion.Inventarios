@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -12,27 +13,18 @@ namespace server.Controllers
     public class PcController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-
-        public PcController(DatabaseService databaseService)
+        private readonly IMapper _mapper;
+        public PcController(DatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
+            _mapper = mapper;
         }
 
         [HttpPost()]
         [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreatePcModel createPcModel)
         {
-            var pc = new PcModel();
-            pc.NroInventario = createPcModel.NroInventario;
-            pc.Disco = createPcModel.Disco;
-            pc.Marca = createPcModel.Marca;
-            pc.Fuente = createPcModel.Fuente;
-            pc.Procesador = createPcModel.Procesador;
-            pc.Modelo = createPcModel.Modelo;
-            pc.Ram = createPcModel.Ram;
-            pc.TipoRam = createPcModel.TipoRam;
-            pc.OficinaId = createPcModel.oficinaId;
-            pc.NroSerie = createPcModel.NroSerie;
+            var pc = _mapper.Map<PcModel>(createPcModel);
             _databaseService.Pcs.Add(pc);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status201Created, pc);
@@ -46,22 +38,9 @@ namespace server.Controllers
                 from pc in _databaseService.Pcs
                 join Oficinas in _databaseService.Oficinas
                 on pc.OficinaId equals Oficinas.OficinaId
-                select new GetPcs()
-                {
-                    NroInventario = pc.NroInventario,
-                    NroSerie = pc.NroSerie,
-                    Marca = pc.Marca,
-                    Modelo = pc.Modelo,
-                    Procesador = pc.Procesador,
-                    Ram = pc.Ram,
-                    TipoRam = pc.TipoRam,
-                    Disco = pc.Disco,
-                    Fuente = pc.Fuente,
-                    Oficina = Oficinas.Nombre
-                }
+                select _mapper.Map<GetPcs>(pc)
                 ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
-
     }
 }

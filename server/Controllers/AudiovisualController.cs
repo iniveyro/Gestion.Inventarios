@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -12,23 +13,18 @@ namespace server.Controllers
     public class AudiovisualController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-        public AudiovisualController(DatabaseService databaseService)
+        private readonly IMapper _mapper;
+        public AudiovisualController(DatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
+            _mapper = mapper;
         }
 
         [HttpPost()]
         [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateAudiovisualModel createAudiovisualModel)
         {
-            var av = new AudiovisualModel();
-            av.NroInventario = createAudiovisualModel.NroInventario;
-            av.Marca = createAudiovisualModel.Marca;
-            av.Modelo = createAudiovisualModel.Modelo;
-            av.Accesorio = createAudiovisualModel.Accesorios;
-            av.Tipo = createAudiovisualModel.Tipo;
-            av.OficinaId = createAudiovisualModel.oficinaId;
-            av.NroSerie = createAudiovisualModel.NroSerie;
+            var av = _mapper.Map<AudiovisualModel>(createAudiovisualModel);
             _databaseService.Audiovisuales.Add(av);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status201Created, av);
@@ -42,16 +38,7 @@ namespace server.Controllers
                 from av in _databaseService.Audiovisuales
                 join Oficinas in _databaseService.Oficinas
                 on av.OficinaId equals Oficinas.OficinaId
-                select new GetAudiovisuales()
-                {
-                    NroInventario = av.NroInventario,
-                    NroSerie = av.NroSerie,
-                    Marca = av.Marca,
-                    Modelo = av.Modelo,
-                    Accesorios = av.Accesorio,
-                    Tipo = av.Tipo,
-                    Oficina = Oficinas.Nombre
-                }
+                select _mapper.Map<GetAudiovisuales>(av)
                 ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }

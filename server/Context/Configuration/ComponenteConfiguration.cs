@@ -13,6 +13,7 @@ namespace server.Context.Configuration
             entityBuilder.Property(x => x.IdComp).UseIdentityColumn();
             entityBuilder.Property(x => x.Marca).HasMaxLength(80);
             entityBuilder.Property(x => x.Modelo).HasMaxLength(80);
+            entityBuilder.HasIndex(x => x.Modelo).IsUnique();
             entityBuilder.Property(x => x.Detalle).HasMaxLength(200);
             entityBuilder.Property(x => x.Tipo).HasMaxLength(80);
             entityBuilder.Property(x=>x.Cantidad).HasMaxLength(1000);

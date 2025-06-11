@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -11,9 +12,11 @@ namespace server.Controllers
     public class EquipoController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-        public EquipoController(DatabaseService databaseService)
+        private readonly IMapper _mapper;
+        public EquipoController(DatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
+            _mapper = mapper;
         }
 
         [HttpPost()]
@@ -23,16 +26,7 @@ namespace server.Controllers
             var data = await (
                 from Equipos in _databaseService.Equipos
                 where equipoModel.NroInventario == Equipos.NroInventario || equipoModel.NroSerie == Equipos.NroSerie
-                select new EquipoModel
-                {
-                    IdEquipo = Equipos.IdEquipo,
-                    NroInventario = Equipos.NroInventario,
-                    NroSerie = Equipos.NroSerie,
-                    Marca = Equipos.Marca,
-                    Modelo = Equipos.Modelo,
-                    Observacion = Equipos.Observacion,
-                    OficinaId = Equipos.OficinaId,
-                }
+                select _mapper.Map<EquipoModel>(Equipos)
             ).FirstOrDefaultAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }
@@ -44,16 +38,7 @@ namespace server.Controllers
             var data = await (
                 from Equipos in _databaseService.Equipos
                 where deleteEquipoModel.NroInventario == Equipos.NroInventario || deleteEquipoModel.NroSerie == Equipos.NroSerie
-                select new EquipoModel
-                {
-                    IdEquipo = Equipos.IdEquipo,
-                    NroInventario = Equipos.NroInventario,
-                    NroSerie = Equipos.NroSerie,
-                    Marca = Equipos.Marca,
-                    Modelo = Equipos.Modelo,
-                    Observacion = Equipos.Observacion,
-                    OficinaId = Equipos.OficinaId,
-                }
+                select _mapper.Map<EquipoModel>(Equipos)
             ).FirstOrDefaultAsync();
             try
             {

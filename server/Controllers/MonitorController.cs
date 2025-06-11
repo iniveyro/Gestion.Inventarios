@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -12,23 +13,18 @@ namespace server.Controllers
     public class MonitorController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-        public MonitorController(DatabaseService databaseService)
+        private readonly IMapper _mapper;
+        public MonitorController(DatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
+            _mapper = mapper;
         }
 
         [HttpPost()]
         [Route("crear")]
         public async Task<IActionResult> Create([FromBody] CreateMonitorModel createMonitorModel)
         {
-            var monitor = new MonitorModel();
-            monitor.NroInventario = createMonitorModel.NroInventario;
-            monitor.Marca = createMonitorModel.Marca;
-            monitor.Modelo = createMonitorModel.Modelo;
-            monitor.Fuente = createMonitorModel.Fuente;
-            monitor.Resolucion = createMonitorModel.Resolucion;
-            monitor.OficinaId = createMonitorModel.oficinaId;
-            monitor.NroSerie = createMonitorModel.NroSerie;
+            var monitor = _mapper.Map<MonitorModel>(createMonitorModel);
             _databaseService.Monitores.Add(monitor);
             await _databaseService.SaveAsync();
             return StatusCode(StatusCodes.Status201Created, monitor);
@@ -42,16 +38,7 @@ namespace server.Controllers
                 from m in _databaseService.Monitores
                 join Oficinas in _databaseService.Oficinas
                 on m.OficinaId equals Oficinas.OficinaId
-                select new GetMonitores()
-                {
-                    NroInventario = m.NroInventario,
-                    NroSerie = m.NroSerie,
-                    Marca = m.Marca,
-                    Modelo = m.Modelo,
-                    Resolucion = m.Resolucion,
-                    Fuente = m.Fuente,
-                    Oficina = Oficinas.Nombre
-                }
+                select _mapper.Map<GetMonitores>(m)
                 ).ToListAsync();
             return StatusCode(StatusCodes.Status200OK, data);
         }

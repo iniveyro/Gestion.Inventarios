@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using server.Models;
 
-namespace ApiAudiencia.Custom
+namespace Gestion.Inventarios.Custom
 {
     public class Utilidades
     {

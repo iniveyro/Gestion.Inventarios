@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -11,10 +14,13 @@ namespace server.Controllers
     public class UserController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-        public UserController(DatabaseService databaseService)
+        private readonly IMapper _mapper;
+        public UserController(DatabaseService databaseService, IMapper mapper)
         {
             _databaseService = databaseService;
+            _mapper = mapper;
         }
+
         [HttpPost("crear")]
         public async Task<IActionResult> Create([FromBody] CreateUserModel createUserModel)
         {
@@ -34,7 +40,32 @@ namespace server.Controllers
             var listado = await _databaseService.Users.ToListAsync();
             return StatusCode(StatusCodes.Status200OK, listado);
         }
-        
+
+        [HttpPut("actualizarpass")]
+        [Authorize]
+        public async Task<IActionResult> ActualizarPassword(UpdatePassword updatePassword)
+        {
+            if (updatePassword.NuevaContra == updatePassword.ConfirmarContra)
+            {
+                var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var usuario = await _databaseService.Users.FirstOrDefaultAsync(u => u.UserId.ToString() == id);
+                try
+                {
+                    usuario.Password = BCrypt.Net.BCrypt.HashPassword(updatePassword.NuevaContra);
+                    await _databaseService.SaveAsync();
+                    return StatusCode(StatusCodes.Status200OK, "Se modifico la contraseña correctamente");
+                }
+                catch (System.Exception)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "No se encontro el usuario");
+                }
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "Las contraseñas no coinciden");
+            }
+        }
+
         [HttpDelete("borrar/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

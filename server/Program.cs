@@ -1,5 +1,5 @@
 using System.Text;
-using ApiAudiencia.Custom;
+using Gestion.Inventarios.Custom;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

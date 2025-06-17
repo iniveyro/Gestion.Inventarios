@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +13,9 @@ namespace server.Controllers
     public class UserController : ControllerBase
     {
         private readonly DatabaseService _databaseService;
-        private readonly IMapper _mapper;
-        public UserController(DatabaseService databaseService, IMapper mapper)
+        public UserController(DatabaseService databaseService)
         {
             _databaseService = databaseService;
-            _mapper = mapper;
         }
 
         [HttpPost("crear")]

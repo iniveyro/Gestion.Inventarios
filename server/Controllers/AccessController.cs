@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
 using server.Models.DTOs.User;
-using ApiAudiencia.Custom;
-namespace ApiAudiencia.Controllers
+using Gestion.Inventarios.Custom;
+
+namespace Gestion.Inventarios.Controllers
 {
     [Route("api/[controller]")]
     [AllowAnonymous]

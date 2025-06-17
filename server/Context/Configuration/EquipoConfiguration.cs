@@ -11,11 +11,10 @@ namespace server.Context.Configuration
             entityBuilder.ToTable("Equipo");
             
             entityBuilder.HasKey(x => x.IdEquipo);
-            entityBuilder.Property(x => x.IdEquipo).UseIdentityColumn();
-            entityBuilder.Property(x=>x.NroInventario);
-            entityBuilder.HasIndex(x => x.NroInventario).IsUnique();
-            entityBuilder.Property(x=>x.NroSerie);
-            entityBuilder.HasIndex(x => x.NroSerie).IsUnique();
+            entityBuilder.Property(x => x.NroInventario).IsRequired(false).HasDefaultValue(0); // Asegura que la columna permite NULL
+            entityBuilder.HasIndex(x => x.NroInventario).IsUnique().HasFilter(@"""NroInventario"" <> 0"); // Filtro para ignorar NULLs en la unicidad
+            entityBuilder.Property(x => x.NroSerie).IsRequired(false); // Asegura que la columna permite NULL
+            entityBuilder.HasIndex(x => x.NroSerie).IsUnique().HasFilter(@"""NroSerie"" IS NOT NULL AND ""NroSerie"" <> ''"); // Filtro para ignorar NULLs en la unicidad
             entityBuilder.Property(x=>x.Marca).IsRequired();
             entityBuilder.Property(x=>x.Modelo).IsRequired();
             entityBuilder.Property(x=>x.Observacion);

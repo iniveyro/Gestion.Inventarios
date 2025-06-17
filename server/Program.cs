@@ -1,91 +1,55 @@
-using System.Text;
 using Gestion.Inventarios.Custom;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using server.Context.Database;
+using server.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cargar appsettings.secret.json SOLO en entorno local (no en producción)
-if (builder.Environment.IsDevelopment())
-{
-    builder.Configuration.AddJsonFile("appsettings.secret.json", optional: false, reloadOnChange: true);
-}
-
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? builder.Configuration["JWT:key"];
-
-var connectionString = Environment.GetEnvironmentVariable("PostgresConnection") 
-    ?? builder.Configuration.GetConnectionString("RailwayPostgresConnection");
-
-builder.Services.AddAuthorization();
-
-builder.Services.AddAuthentication(config =>
-{
-    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!))
-    };
-});
-
-// Configuración de la base de datos
-builder.Services.AddDbContext<DatabaseService>(options =>
-    options.UseNpgsql(connectionString));
-builder.Services.AddSingleton<Utilidades>();
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program));
-
-builder.Services.AddHttpClient("ExcelService", client => 
-{
-    client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("excel-service") ?? builder.Configuration["apiUrl:excel-service"]);
-    client.Timeout = TimeSpan.FromMinutes(5);
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
+// Configuración inicial
+LoadSecretConfiguration(builder);
+ConfigureServices(builder);
 
 var app = builder.Build();
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
+ConfigureMiddleware(app);
 
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
-    });
-//}
-
-// Aplicar CORS
-app.UseCors("AllowAll");
-
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseHttpsRedirection();
-app.MapControllers();
 app.Run();
+
+static void LoadSecretConfiguration(WebApplicationBuilder builder)
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        builder.Configuration.AddJsonFile(
+            "appsettings.secret.json", 
+            optional: false, 
+            reloadOnChange: true);
+    }
+}
+
+static void ConfigureServices(WebApplicationBuilder builder)
+{
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddAutoMapper(typeof(Program));
+    
+    builder.Services.AddCustomAuthentication(builder.Configuration);
+    builder.Services.AddCustomDatabase(builder.Configuration);
+    builder.Services.AddCustomHttpClients(builder.Configuration);
+    builder.Services.AddCustomCors();
+    
+    builder.Services.AddSingleton<Utilidades>();
+}
+
+static void ConfigureMiddleware(WebApplication app)
+{
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Urls.Add($"http://*:{port}");
+
+    app.MapGet("/", () => "API Funcionando...");
+
+    app.UseCustomSwagger();
+    app.UseCors("AllowAll");
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseHttpsRedirection();
+    app.MapControllers();
+}

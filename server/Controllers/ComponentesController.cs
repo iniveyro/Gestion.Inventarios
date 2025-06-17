@@ -67,15 +67,14 @@ namespace server.Controllers
         {
             try
             {
-                var componentes = await _databaseService.Componentes.ToListAsync();
-
                 var httpClient = httpClientFactory.CreateClient("ExcelService");
-
+                var response = await httpClient.GetAsync("api/"); //Para despertar al servicio
+                var componentes = await _databaseService.Componentes.ToListAsync();
                 // Serializar los datos a JSON para enviar
                 var jsonData = JsonSerializer.Serialize(componentes);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync("api/Excel/exportar-componentes",content);
+                response = await httpClient.PostAsync("api/Excel/exportar-componentes",content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -109,7 +108,8 @@ namespace server.Controllers
             try
             {
                 var httpClient = httpClientFactory.CreateClient("ExcelService");
-                var response = await httpClient.GetAsync("api/Excel/nuevo-componente");
+                var response = await httpClient.GetAsync("api/"); //Para despertar al servicio
+                response = await httpClient.GetAsync("api/Excel/nuevo-componente");
 
                 // Verificar si la respuesta fue exitosa
                 if (!response.IsSuccessStatusCode)
@@ -156,14 +156,15 @@ namespace server.Controllers
             try
             {
                 var httpClient = httpClientFactory.CreateClient("ExcelService");
-
+                var response = await httpClient.GetAsync("api/"); //Para despertar al servicio
+                
                 // Crear contenido multipart para enviar el archivo
                 using var formContent = new MultipartFormDataContent();
                 using var fileStream = file.OpenReadStream();
                 formContent.Add(new StreamContent(fileStream), "file", file.FileName);
 
                 // Enviar archivo al servicio externo
-                var response = await httpClient.PostAsync("api/Excel/importar-componente", formContent);
+                response = await httpClient.PostAsync("api/Excel/importar-componente", formContent);
 
                 if (!response.IsSuccessStatusCode)
                 {

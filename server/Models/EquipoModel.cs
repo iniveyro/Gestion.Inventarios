@@ -3,7 +3,7 @@ namespace server.Models
     public class EquipoModel
     {
         public int IdEquipo { get; set; }
-        public int NroInventario { get; set; }
+        public int? NroInventario { get; set; }
         public string NroSerie {get;set;}
         public string? Marca {get;set;}
         public string? Modelo {get;set;}

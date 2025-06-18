@@ -19,6 +19,7 @@ namespace server.Controllers
         }
 
         [HttpPost("crear")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Create([FromBody] CreateUserModel createUserModel)
         {
             var user = new UserModel();
@@ -32,6 +33,7 @@ namespace server.Controllers
         }
 
         [HttpGet("listado")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> GetAll()
         {
             var listado = await _databaseService.Users.ToListAsync();
@@ -39,7 +41,7 @@ namespace server.Controllers
         }
 
         [HttpPut("actualizarpass")]
-        [Authorize]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> ActualizarPassword(UpdatePassword updatePassword)
         {
             if (updatePassword.NuevaContra == updatePassword.ConfirmarContra)
@@ -64,6 +66,7 @@ namespace server.Controllers
         }
 
         [HttpDelete("borrar/{id}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int id)
         {
             var usuario = await _databaseService.Users.FindAsync(id);

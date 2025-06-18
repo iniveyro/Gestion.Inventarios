@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -21,6 +22,7 @@ namespace server.Controllers
         }
         [HttpPost()]
         [Route("crear")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Create([FromBody] CreateImpresoraModel createImpresora)
         {
             var impresora = _mapper.Map<ImpresoraModel>(createImpresora);
@@ -31,6 +33,7 @@ namespace server.Controllers
 
         [HttpGet()]
         [Route("listado")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (

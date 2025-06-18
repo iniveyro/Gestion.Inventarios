@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -20,6 +21,7 @@ namespace server.Controllers
 
         [HttpPost()]
         [Route("crear")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Create([FromBody] createComponente c)
         {
             var data = new ComponenteModel()
@@ -37,6 +39,7 @@ namespace server.Controllers
 
         [HttpPost()]
         [Route("crear-lista")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Create([FromBody] List<createComponente> listado)
         {
             foreach (var c in listado)
@@ -55,15 +58,28 @@ namespace server.Controllers
 
         [HttpGet()]
         [Route("listado")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Listado()
         {
             var listado = await _databaseService.Componentes.ToListAsync();
             return StatusCode(StatusCodes.Status200OK, listado);
         }
 
+        [HttpDelete()]
+        [Route("borrar/{id}")]
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> Listado([FromBody] int id)
+        {
+            var componente = await _databaseService.Componentes.FirstOrDefaultAsync(x=>x.IdComp == id);
+            _databaseService.Componentes.Remove(componente);
+            await _databaseService.SaveAsync();
+            return StatusCode(StatusCodes.Status200OK, $"Se elimino correctamente el componente {componente.Modelo}");
+        }
+
         [HttpGet]
         [Route("listado-excel")]
-        public async Task<IActionResult> ListadoExcel([FromServices]IHttpClientFactory httpClientFactory)
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> ListadoExcel([FromServices] IHttpClientFactory httpClientFactory)
         {
             try
             {
@@ -74,7 +90,7 @@ namespace server.Controllers
                 var jsonData = JsonSerializer.Serialize(componentes);
                 var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                response = await httpClient.PostAsync("api/Excel/exportar-componentes",content);
+                response = await httpClient.PostAsync("api/Excel/exportar-componentes", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -103,7 +119,8 @@ namespace server.Controllers
 
         [HttpGet]
         [Route("modelo-excel")]
-        public async Task<IActionResult> ObtenerPlantillaExcel([FromServices]IHttpClientFactory httpClientFactory)
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> ObtenerPlantillaExcel([FromServices] IHttpClientFactory httpClientFactory)
         {
             try
             {
@@ -141,7 +158,8 @@ namespace server.Controllers
         }
         [HttpPost]
         [Route("cargar-excel")]
-        public async Task<IActionResult> cargarExcel(IFormFile file, [FromServices]IHttpClientFactory httpClientFactory)
+        [Authorize(Policy = "AuthenticatedUser")]
+        public async Task<IActionResult> cargarExcel(IFormFile file, [FromServices] IHttpClientFactory httpClientFactory)
         {
             // Validación más robusta del archivo
             if (file == null || file.Length == 0)
@@ -157,7 +175,7 @@ namespace server.Controllers
             {
                 var httpClient = httpClientFactory.CreateClient("ExcelService");
                 var response = await httpClient.GetAsync("api/"); //Para despertar al servicio
-                
+
                 // Crear contenido multipart para enviar el archivo
                 using var formContent = new MultipartFormDataContent();
                 using var fileStream = file.OpenReadStream();
@@ -169,7 +187,7 @@ namespace server.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    return StatusCode((int)response.StatusCode, 
+                    return StatusCode((int)response.StatusCode,
                         $"Error al procesar archivo en el servicio externo: {errorContent}");
                 }
 
@@ -178,7 +196,8 @@ namespace server.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new {
+                return StatusCode(500, new
+                {
                     Error = "Error interno al procesar el archivo",
                     Detalle = ex.Message
                 });

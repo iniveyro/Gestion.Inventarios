@@ -33,6 +33,7 @@ static void ConfigureServices(WebApplicationBuilder builder)
     builder.Services.AddCustomAuthentication(builder.Configuration);
     builder.Services.AddCustomDatabase(builder.Configuration);
     builder.Services.AddCustomHttpClients(builder.Configuration);
+    builder.Services.Authorization(builder.Configuration);
     builder.Services.AddCustomCors();
     
     builder.Services.AddSingleton<Utilidades>();

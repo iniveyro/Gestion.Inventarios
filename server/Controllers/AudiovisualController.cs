@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -22,6 +23,7 @@ namespace server.Controllers
 
         [HttpPost()]
         [Route("crear")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Create([FromBody] CreateAudiovisualModel createAudiovisualModel)
         {
             var av = _mapper.Map<AudiovisualModel>(createAudiovisualModel);
@@ -32,6 +34,7 @@ namespace server.Controllers
 
         [HttpGet()]
         [Route("listado")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetAll()
         {
             var data = await (

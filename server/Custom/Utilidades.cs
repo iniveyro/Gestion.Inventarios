@@ -18,8 +18,9 @@ namespace Gestion.Inventarios.Custom
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? _configuration["JWT:Key"];
             var claims = new[]
             {
-               new Claim(ClaimTypes.NameIdentifier, modelo.UserId.ToString()),
-               new Claim(ClaimTypes.Name, modelo.Username!)
+                new Claim(ClaimTypes.NameIdentifier, modelo.UserId.ToString()),
+                new Claim(ClaimTypes.Name, modelo.Username!),
+                new Claim("IsAdmin", modelo.EsAdmin.ToString())
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

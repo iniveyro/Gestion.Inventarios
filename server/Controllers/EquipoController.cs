@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -21,6 +22,7 @@ namespace server.Controllers
 
         [HttpPost()]
         [Route("obtener_equipo")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetByNroInvSerie([FromBody] DeleteEquipoModel equipoModel)
         {
             var data = await (
@@ -33,6 +35,7 @@ namespace server.Controllers
 
         [HttpDelete()]
         [Route("borrar")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> Delete([FromBody] DeleteEquipoModel deleteEquipoModel)
         {
             var data = await (

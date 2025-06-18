@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Context.Database;
@@ -18,6 +19,7 @@ namespace server.Controllers
         }
 
         [HttpPost("crear")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Create([FromBody] CreateOficinaModel createOficinaModel)
         {
             var oficina = new OficinaModel();
@@ -29,6 +31,7 @@ namespace server.Controllers
         }
 
         [HttpGet("listado")]
+        [Authorize(Policy = "AuthenticatedUser")]
         public async Task<IActionResult> GetAll()
         {
             var data = await _databaseService.Oficinas.ToListAsync();
@@ -36,6 +39,7 @@ namespace server.Controllers
         }
 
         [HttpDelete("borrar/{id}")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int oficinaId)
         {
             var oficina = await _databaseService.Oficinas.FindAsync(oficinaId);
